@@ -40,6 +40,11 @@ public class UI {
 		System.out.flush();
 	}	
 	
+	/**
+	 * Method to read and check a position informed by the player.
+	 * @param sc.
+	 * @return object containing the given position.
+	 */
 	public static ChessPosition readChessPosition(Scanner sc) {
 		try {
 			String s = sc.nextLine();
@@ -52,6 +57,11 @@ public class UI {
 		}
 	}
 	
+	/**
+	 * Print the chess match with the player's turn and turn indicators.
+	 * @param chessMatch
+	 * @param captured
+	 */
 	public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured) {
 		printBoard(chessMatch.getPieces());
 		System.out.println();
@@ -70,6 +80,10 @@ public class UI {
 		}
 	}
 	
+	/**
+	 * Print the board with the coordinates.
+	 * @param pieces
+	 */
 	public static void printBoard(ChessPiece[][] pieces) {
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -91,7 +105,12 @@ public class UI {
 		}
 		System.out.println("  a b c d e f g h");
 	}
-
+	
+	/**
+	 * Whether or not to print the background in blue.
+	 * @param piece Match piece.
+	 * @param background
+	 */
 	private static void printPiece(ChessPiece piece, boolean background) {
 		if (background) {
 			System.out.print(ANSI_BLUE_BACKGROUND);
@@ -110,6 +129,10 @@ public class UI {
         System.out.print(" ");
 	}
 	
+	/**
+	 * Receives a list of chess pieces and prints this list.
+	 * @param captured Captured pieces list.
+	 */
 	private static void printCapturedPieces(List<ChessPiece> captured) {
 		List<ChessPiece> white = captured.stream().filter(x -> x.getColor() == Color.WHITE).collect(Collectors.toList());
 		List<ChessPiece> black = captured.stream().filter(x -> x.getColor() == Color.BLACK).collect(Collectors.toList());

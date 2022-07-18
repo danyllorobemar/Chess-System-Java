@@ -27,6 +27,10 @@ public class ChessMatch {
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
 	
+	
+	/**
+	 * Builder to start the game with the 8x8 board and the pieces in their respective positions.
+	 */
 	public ChessMatch() {
 		board = new Board(8, 8);
 		turn = 1;
@@ -58,6 +62,10 @@ public class ChessMatch {
 		return promoted;
 	}
 	
+	/**
+	 * Returns the chess match pieces matrix.
+	 * @return mat Chess match pieces matrix.
+	 */
 	public ChessPiece[][] getPieces() {
 		ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
 		for (int i=0; i<board.getRows(); i++) {
@@ -68,12 +76,27 @@ public class ChessMatch {
 		return mat;
 	}
 	
+	/**
+	 * Method to return the possible moves of the piece in the given position.
+	 * @param sourcePosition Position of the piece to be moved.
+	 * @return Possible moves of the piece.
+	 */
 	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
 		Position position = sourcePosition.toPosition();
 		validateSourcePosition(position);
 		return board.piece(position).possibleMoves();
 	}
 	
+	/**
+	 * Convert chess positions in parameter to matrix position.
+	 * Checks if there is a piece in the source position.
+	 * Checks conditions to see if it is possible to move the piece to the target position.
+	 * Checks special moves.
+	 * Move piece from source position to target position.
+	 * @param sourcePosition Source Position.
+	 * @param targetPosition Target Position.
+	 * @return capturedPiece Captured piece if applicable.
+	 */
 	public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
@@ -117,6 +140,11 @@ public class ChessMatch {
 		return (ChessPiece)capturedPiece;
 	}
 
+	/**
+	 * Method to change the promoted piece.
+	 * @param type Selected piece.
+	 * @return selected piece.
+	 */
 	public ChessPiece replacePromotedPiece(String type) {
 		if (promoted == null) {
 			throw new IllegalStateException("There is no piece to be promoted");
@@ -143,6 +171,13 @@ public class ChessMatch {
 		return new Rook(board, color);
 	}
 	
+	/**
+	 * Method to move a piece from the source position to the target position.
+	 * Checks special moves.
+	 * @param source Source position.
+	 * @param target Target position.
+	 * @return Captured piece
+	 */
 	private Piece makeMove(Position source, Position target) {
 		ChessPiece p = (ChessPiece)board.removePiece(source);
 		p.increaseMoveCount();
@@ -191,6 +226,12 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 	
+	/**
+	 * Method to undo a move(if the player puts himself in check).
+	 * @param source
+	 * @param target
+	 * @param capturedPiece 
+	 */
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
 		ChessPiece p = (ChessPiece)board.removePiece(target);
 		p.decreaseMoveCount();
@@ -254,6 +295,9 @@ public class ChessMatch {
 		}
 	}
 	
+	/**
+	 * Method to change the turn of the players.
+	 */
 	private void nextTurn() {
 		turn++;
 		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
@@ -263,6 +307,11 @@ public class ChessMatch {
 		return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
 	
+	/**
+	 * Method to find king of a certain color.
+	 * @param color King color.
+	 * @return Chess piece if found. 
+	 */
 	private ChessPiece king(Color color) {
 		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());
 		for (Piece p : list) {
@@ -273,6 +322,11 @@ public class ChessMatch {
 		throw new IllegalStateException("There is no " + color + " king on the board");
 	}
 	
+	/**
+	 * Checks if the king of a certain color is in check.
+	 * @param color King Color.
+	 * @return true If the king is in check or false if he's not one.
+	 */
 	private boolean testCheck(Color color) {
 		Position kingPosition = king(color).getChessPosition().toPosition();
 		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == opponent(color)).collect(Collectors.toList());
@@ -285,6 +339,11 @@ public class ChessMatch {
 		return false;
 	}
 	
+	/**
+	 * Checks if the king of a certain color is in checkMate.
+	 * @param color King Color.
+	 * @return true If the king is in check or false if he's not one.
+	 */
 	private boolean testCheckMate(Color color) {
 		if (!testCheck(color)) {
 			return false;
@@ -310,11 +369,20 @@ public class ChessMatch {
 		return true;
 	}	
 	
+	/**
+	 * Auxiliary method to instantiate the pieces with the chess coordinate.
+	 * @param column
+	 * @param row
+	 * @param piece
+	 */
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 		piecesOnTheBoard.add(piece);
 	}
 	
+	/**
+	 * Method to instantiate the pieces on the board
+	 */
 	private void initialSetup() {
         placeNewPiece('a', 1, new Rook(board, Color.WHITE));
         placeNewPiece('b', 1, new Knight(board, Color.WHITE));

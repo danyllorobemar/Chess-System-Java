@@ -25,6 +25,11 @@ public class King extends ChessPiece {
 		return p == null || p.getColor() != getColor();
 	}
 	
+	/**
+	 * Checks if the rook are ready for the rook castling.
+	 * @param position
+	 * @return
+	 */
 	private boolean testRookCastling(Position position) {
 		ChessPiece p = (ChessPiece)getBoard().piece(position);
 		return p != null && p instanceof Rook && p.getColor() == getColor() && p.getMoveCount() == 0;
